@@ -14,7 +14,7 @@ void tui_signal_handler(int signum) {
 int main(int argc, char *argv[]) {
     // Ensure the user provided at least one argument
     if (argc != 2) {
-        fprintf(stderr, "Usage: %s <start|quit|tui>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <start|kill|tui>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -25,12 +25,12 @@ int main(int argc, char *argv[]) {
     if (strcmp(flag, "start") == 0) {
         signal(SIGUSR1, tui_signal_handler);
         run_daemon();
-    } else if (strcmp(flag, "quit") == 0) {
+    } else if (strcmp(flag, "kill") == 0) {
         quit_daemon();
     } else if (strcmp(flag, "tui") == 0) {
         run_tui();
     } else {
-        fprintf(stderr, "Invalid flag. Usage: %s <start|quit|tui>\n", argv[0]);
+        fprintf(stderr, "Invalid flag. Usage: %s <start|kill|tui>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
