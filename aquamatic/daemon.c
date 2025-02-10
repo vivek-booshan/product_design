@@ -14,7 +14,6 @@ void ensure_directory_exists(const char *path);
 void read_pid_file(FILE *pid_file, pid_t *pid); 
 void get_pid(pid_t *pid);
 
-// Daemon logic to run in the background
 void run_daemon() {
     signal(SIGUSR1, tui_signal_handler);
 
@@ -106,7 +105,6 @@ void quit_daemon() {
 }
 
 void ensure_directory_exists(const char *path) {
-    // Create the directory if it doesn't exist
     if (mkdir(path, 0755) < 0 && errno != EEXIST) {
         perror("Failed to create PID directory");
         exit(EXIT_FAILURE);
