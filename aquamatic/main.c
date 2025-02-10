@@ -1,14 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
+#include <time.h>
 
 #include "aquamatic.h"
 
-int tui_flag = 0;
+volatile int tui_flag = 0;
 
 void tui_signal_handler(int signum) {
     tui_flag = 1;
+}
+
+void get_timestamp(char *buffer, size_t buffer_size) {
+    time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&rawtime);               // Get current time
+    timeinfo = localtime(&rawtime); // Convert to local time
+
+    // Format the time as "YY-MM-DD HH:MM:SS"
+    strftime(buffer, buffer_size, "%y-%m-%d %H:%M:%S", timeinfo);
 }
 
 int main(int argc, char *argv[]) {
@@ -23,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     // Decide which function to call based on the argument
     if (strcmp(flag, "start") == 0) {
-        signal(SIGUSR1, tui_signal_handler);
+        // signal(SIGUSR1, tui_signal_handler);
         run_daemon();
     } else if (strcmp(flag, "kill") == 0) {
         quit_daemon();

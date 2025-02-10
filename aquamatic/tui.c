@@ -23,24 +23,25 @@ const char *menu_options[NUM_OPTIONS] = {
 
 
 void doublecheck_kill_daemon();
+
 void show_sensor_menu(const char *Title); // , float (*set_value)());
 
 void run_tui() {
-    // FILE *pid_file = fopen(PID_FILE, "r");
-    // pid_t pid;
+    FILE *pid_file = fopen(PID_FILE, "r");
+    pid_t pid;
 
-    // if (!pid_file) {
-    //     printf("No running daemon found.\n");
+    if (!pid_file) {
+        printf("No running daemon found.\n");
     //     // printf("Would you like to start aquamatic? (y/n)");
     //     // int start_session = getchar();
     //     // if (start_session == 'y') {
     //     //     printf("Starting Daemon");
     //     //     run_daemon();
     //     // } else if (start_session == 'n')
-    //     return;
-    // }
-    // read_pid_file(pid_file, &pid);
-    // fclose(pid_file);
+        return;
+    }
+    read_pid_file(pid_file, &pid);
+    fclose(pid_file);
 
     initscr();
     noecho();
@@ -79,7 +80,7 @@ void run_tui() {
             case 10: // Enter key
                 choice = highlight;
                 break;
-            case 'q':
+            case 'q': //fallthrough
             case 'Q':
                 endwin();
                 return;
@@ -95,6 +96,7 @@ void run_tui() {
                     break;
                 case 1:
                     doublecheck_kill_daemon();
+                    // mvprintw(10, 4, "Daemon (PID %d) terminated.", pid);
                     break;
                 case 2:
                     show_sensor_menu("Temperature");
@@ -122,6 +124,13 @@ void run_tui() {
                     // show_sensor_menu("Calcium/Magnesium");
                     break;
                 case 9:
+
+                    if (kill(pid, SIGUSR1) != 0) {
+                        mvprintw(10, 4, "Failed to send signal to daemon");
+                    } else {
+                        mvprintw(10, 4, "Signal sent to daemon");
+                    }
+                    // signal(SIGUSR1, tui_signal_handler);
                     break;
             }
             mvprintw(12, 4, "Press any key to return...");
@@ -144,8 +153,9 @@ void doublecheck_kill_daemon() {
 
     int ch = getch();
     if (ch == 'y' || ch == 'Y') {
+        mvprintw(12, 4, "");
         quit_daemon();
-        mvprintw(12, 4, "Daemon killed.");
+        mvprintw(12, 4, "Daemon terminated.");
     } else {
         mvprintw(12, 4, "Operation canceled.");
     }
