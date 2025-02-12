@@ -15,11 +15,15 @@ nativePkgs.mkShell {
     clang-tools
     cmake
   ];
-  buildInputs = with crossPkgs; [
-    wiringpi
+  buildInputs = [
+    crossPkgs.wiringpi
+    crossPkgs.ncurses
+    nativePkgs.ncurses
   ];
 
   shellHook = ''
     export WIRINGPI_PATH="${crossPkgs.wiringpi}"
+    export NCURSES_PATH="${nativePkgs.ncurses}"
+    export NCURSES_PATH_ARM="${crossPkgs.ncurses}"
   '';
 }
