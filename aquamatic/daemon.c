@@ -62,7 +62,7 @@ void run_daemon() {
     while (1) {
         if (tui_flag)  {
             // printf("Daemon successfully received user input from TUI\n");
-            FILE *file = fopen(STATE_FILE, "w");
+            FILE *file = fopen(STATE_FILE, "a");
             if (file) {
                 // int state;
                 // if (fscanf(file, "%d", &state) == 1) {
