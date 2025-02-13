@@ -1,12 +1,11 @@
 #include <signal.h>
 #include <stdio.h>
-// #include <stdlib.h>
 #include <ncurses.h>
 
 #include "aquamatic.h"
+#include "preset.h"
 
-
-#define NUM_OPTIONS 10
+#define NUM_OPTIONS 11
 
 const char *menu_options[NUM_OPTIONS] = {
     "Start Daemon",
@@ -18,6 +17,7 @@ const char *menu_options[NUM_OPTIONS] = {
     "Salinity",
     "Nitrates/Nitrites/Ammonia (coming soon)",
     "Calcium/Magnesium (coming soon)",
+    "Presets",
     "Update"
 };
 
@@ -124,7 +124,9 @@ void run_tui() {
                     // show_sensor_menu("Calcium/Magnesium");
                     break;
                 case 9:
-
+                    show_preset_menu();
+                    break;
+                case 10:
                     if (kill(pid, SIGUSR1) != 0) {
                         mvprintw(10, 4, "Failed to send signal to daemon");
                     } else {
@@ -153,7 +155,7 @@ void doublecheck_kill_daemon() {
 
     int ch = getch();
     if (ch == 'y' || ch == 'Y') {
-        mvprintw(12, 4, "");
+        // mvprintw(12, 4, "");
         quit_daemon();
         mvprintw(12, 4, "Daemon terminated.");
     } else {
@@ -223,3 +225,5 @@ void show_sensor_menu(const char *title) {//, float (*set_value)()) {
         }
     }
 }
+
+
