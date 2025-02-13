@@ -22,10 +22,29 @@ void get_timestamp(char *buffer, size_t buffer_size) {
     strftime(buffer, buffer_size, "%y-%m-%d %H:%M:%S", timeinfo);
 }
 
+
+void print_help(const char *program_name) {
+    printf("Usage: %s <command>\n", program_name);
+    printf("\nCommands:\n");
+    printf("  start   - Starts the Aquamatic daemon.\n");
+    printf("  kill    - Stops the running Aquamatic daemon.\n");
+    printf("  tui     - Launches the terminal user interface (TUI).\n");
+    printf("  help    - Displays this help message.\n");
+    printf("\nDescription:\n");
+    printf("  Aquamatic is a system for managing and automating aquarium systems.\n");
+    printf("  The daemon must be running for TUI mode to work properly.\n");
+    printf("  It is not recommended to manually start or kill the daemon.\n");
+    printf("\nExamples:\n");
+    printf("  %s start   # Start the daemon\n", program_name);
+    printf("  %s kill    # Stop the daemon\n", program_name);
+    printf("  %s tui     # Open the TUI\n", program_name);
+    printf("\n");
+}
+
 int main(int argc, char *argv[]) {
     // Ensure the user provided at least one argument
     if (argc != 2) {
-        fprintf(stderr, "Usage: %s <start|kill|tui>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <start|kill|tui|help>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -40,8 +59,10 @@ int main(int argc, char *argv[]) {
         quit_daemon();
     } else if (strcmp(flag, "tui") == 0) {
         run_tui();
+    } else if (strcmp(flag, "help") == 0) {
+        print_help(argv[0]);
     } else {
-        fprintf(stderr, "Invalid flag. Usage: %s <start|kill|tui>\n", argv[0]);
+        fprintf(stderr, "Invalid flag. Usage: %s <start|kill|tui|help>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
