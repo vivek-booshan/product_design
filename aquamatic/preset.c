@@ -22,7 +22,7 @@ void show_preset_menu() {
 
     while (1) {
         clear();
-        mvprintw(2, 2, "Aquamatic Control Panel");
+        mvprintw(2, 2, "Presets Menu");
         mvprintw(3, 2, "Use arrow keys to navigate, ENTER to select, 'q' to quit.");
 
         // Print menu options
