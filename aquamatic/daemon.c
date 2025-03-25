@@ -14,7 +14,7 @@ void ensure_directory_exists(const char *path);
 void read_pid_file(FILE *pid_file, pid_t *pid); 
 void get_pid(pid_t *pid);
 
-void run_daemon() {
+void run_daemon(void) {
     signal(SIGUSR1, tui_signal_handler);
 
     ensure_directory_exists(AQUA_DIR);
@@ -83,7 +83,7 @@ void run_daemon() {
 }
 
 
-void quit_daemon() {
+void quit_daemon(void) {
     pid_t pid;
     get_pid(&pid);
 

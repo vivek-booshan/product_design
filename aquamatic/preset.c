@@ -15,7 +15,7 @@ const char *preset_menu_options[PRESET_OPTIONS] = {
     "Custom",
 };
 
-void show_preset_menu() {
+void show_preset_menu(void) {
     int highlight = 0;
     int choice = -1;
     int ch;

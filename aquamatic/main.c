@@ -1,27 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
+#define AQUA_IMPLEMENTATION
 #include "aquamatic.h"
 
 volatile int tui_flag = 0;
-
-void tui_signal_handler(int signum) {
-    tui_flag = 1;
-}
-
-void get_timestamp(char *buffer, size_t buffer_size) {
-    time_t rawtime;
-    struct tm *timeinfo;
-
-    time(&rawtime);               // Get current time
-    timeinfo = localtime(&rawtime); // Convert to local time
-
-    // Format the time as "YY-MM-DD HH:MM:SS"
-    strftime(buffer, buffer_size, "%y-%m-%d %H:%M:%S", timeinfo);
-}
-
 
 void print_help(const char *program_name) {
     printf("Usage: %s <command>\n", program_name);

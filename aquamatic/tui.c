@@ -3,12 +3,12 @@
 #include <ncurses.h>
 #include <string.h>
 
+#define AQUA_IMPLEMENTATION
 #include "aquamatic.h"
 #include "preset.h"
 
-#define NUM_OPTIONS 9
 
-const char *menu_options[NUM_OPTIONS] = {
+const char *menu_options[NUM_OPTIONS] = { // declared in aquamatic.h
     // "Start Daemon",
     // "Kill Daemon",
     "Temperature",
@@ -23,11 +23,11 @@ const char *menu_options[NUM_OPTIONS] = {
 };
 
 
-void doublecheck_kill_daemon();
+void doublecheck_kill_daemon(void);
 
-void show_sensor_menu(const char *Title); // , float (*set_value)());
+static void show_sensor_menu(const char *Title);
 
-void run_tui() {
+void run_tui(void) {
     FILE *pid_file = fopen(PID_FILE, "r");
     pid_t pid;
 
@@ -148,7 +148,7 @@ void run_tui() {
 }
 
 
-void doublecheck_kill_daemon() {
+void doublecheck_kill_daemon(void) {
     
     clear();
     mvprintw(10, 4, "Are you sure you want to kill the daemon? (y/n)");
@@ -228,18 +228,13 @@ void doublecheck_kill_daemon() {
 // }
 
 
-#include <ncurses.h>
-
-#include <ncurses.h>
-#include <string.h>
-
-void show_sensor_menu(const char *title) {
+static void show_sensor_menu(const char *title) {
     int highlight = 0;
     int choice = -1;
     int ch;
     const char *options[] = {
         "View Current Value",
-        "Set Temperature",
+        "Set target",
         "Back"
     };
     const int num_options = 3;

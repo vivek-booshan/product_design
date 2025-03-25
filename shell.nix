@@ -19,6 +19,9 @@ nativePkgs.mkShell {
     crossPkgs.wiringpi
     crossPkgs.ncurses
     nativePkgs.ncurses
+    # nativePkgs.tmux
+    # nativePkgs.zig
+    # nativePkgs.zls
   ];
 
   shellHook = ''
