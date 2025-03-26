@@ -17,6 +17,9 @@ static inline void read_pid_file(FILE *pid_file, pid_t *pid);
 void run_daemon(void);
 void quit_daemon(void);
 void run_tui(void);
+static void tui_signal_handler(int signum);
+static inline void get_timestamp(char *buffer, size_t buffer_size);
+static void show_preset_menu(void);
 
 #ifdef AQUA_IMPLEMENTATION
 
@@ -30,9 +33,6 @@ void run_tui(void);
 #include <time.h>
 #include <ncurses.h>
 
-static void tui_signal_handler(int signum);
-static inline void get_timestamp(char *buffer, size_t buffer_size);
-static void show_preset_menu(void);
 
 #define cast(Type) (Type)
 
@@ -358,7 +358,7 @@ void run_tui(void) {
                 case 'q': //fallthrough
                 case 'Q':
                         endwin();
-                return;
+                        return;
                 }
 
                 // Handle menu selection
