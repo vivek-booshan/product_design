@@ -6,13 +6,14 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <errno.h>
+#include <time.h>
 
 #include "aquamatic.h"
 
 
-void ensure_directory_exists(const char *path);
-void read_pid_file(FILE *pid_file, pid_t *pid); 
+static void ensure_directory_exists(const char *path);
 void get_pid(pid_t *pid);
+void get_timestamp(char *buffer, size_t buffer_size);
 
 void run_daemon(void) {
     signal(SIGUSR1, tui_signal_handler);
@@ -104,14 +105,14 @@ void quit_daemon(void) {
     }
 }
 
-void ensure_directory_exists(const char *path) {
+static void ensure_directory_exists(const char *path) {
     if (mkdir(path, 0755) < 0 && errno != EEXIST) {
         perror("Failed to create PID directory");
         exit(EXIT_FAILURE);
     }
 }
 
-void read_pid_file(FILE *pid_file, pid_t *pid) {
+inline void read_pid_file(FILE *pid_file, pid_t *pid) {
     if (fscanf(pid_file, "%d", pid) != 1) {
         printf("Error reading PID file.\n");
         fclose(pid_file);
@@ -129,3 +130,20 @@ void get_pid(pid_t *pid) {
     fclose(file);
 }
 
+void get_timestamp(char *buffer, size_t buffer_size)
+{
+        time_t rawtime;
+        struct tm *timeinfo;
+
+        time(&rawtime);               // Get current time
+        timeinfo = localtime(&rawtime); // Convert to local time
+
+        // Format the time as "YY-MM-DD HH:MM:SS"
+        strftime(buffer, buffer_size, "%y-%m-%d %H:%M:%S", timeinfo);
+}
+
+void tui_signal_handler(int signum)
+{
+        cast(void) signum;
+        tui_flag = 1;
+}

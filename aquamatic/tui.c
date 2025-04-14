@@ -3,9 +3,7 @@
 #include <ncurses.h>
 #include <string.h>
 
-#define AQUA_IMPLEMENTATION
 #include "aquamatic.h"
-#include "preset.h"
 
 
 const char *menu_options[NUM_OPTIONS] = { // declared in aquamatic.h
@@ -105,7 +103,6 @@ void run_tui(void) {
                     break;
                 case 1:
                     show_sensor_menu("pH");
-                    // mvprintw(10, 4, "pH Level: %.2f", get_ph());
                     break;
                 case 2:
                     // show_sensor_menu("kH");
@@ -136,9 +133,9 @@ void run_tui(void) {
                     // signal(SIGUSR1, tui_signal_handler);
                     break;
             }
-            mvprintw(12, 4, "Press any key to return...");
+            // mvprintw(12, 4, "Press any key to return...");
             refresh();
-            getch(); // Wait for user input before returning
+            // getch(); // Wait for user input before returning
             choice = -1;
         }
     }
@@ -303,7 +300,8 @@ static void show_sensor_menu(const char *title) {
             // Display action result, centered
             const char *message;
             switch (choice) {
-                case 0: message = "Viewing current value..."; break;
+                case 0:
+                    message = "Viewing current value..."; break;
                 case 1: message = "Threshold setting coming soon!"; break;
                 case 2: 
                     delwin(menu_win);
@@ -312,7 +310,7 @@ static void show_sensor_menu(const char *title) {
             }
 
             mvwprintw(menu_win, height / 2, (width - strlen(message)) / 2, "%s", message);
-            mvwprintw(menu_win, height - 2, (width - 24) / 2, "Press any key to return...");
+            // mvwprintw(menu_win, height - 2, (width - 24) / 2, "Press any key to return...");
             wrefresh(menu_win);
             getch();
             choice = -1;
