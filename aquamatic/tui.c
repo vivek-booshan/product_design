@@ -1,10 +1,6 @@
-#include <signal.h>
-#include <stdio.h>
-#include <ncurses.h>
-#include <string.h>
-
 #include "aquamatic.h"
 
+extern pthread_mutex_t temp_lock;
 
 const char *menu_options[NUM_OPTIONS] = { // declared in aquamatic.h
     // "Start Daemon",
@@ -259,7 +255,7 @@ static void show_sensor_menu(const char *title) {
         box(menu_win, 0, 0); // Redraw the border
 
         // Center title correctly inside [ ]
-        int title_length = strlen(title); // + 4;  // Account for "[ ]"
+        int title_length = cast(int)strlen(title); // + 4;  // Account for "[ ]"
         int title_x = (width - title_length) / 2;
         mvwprintw(menu_win, 1, title_x, "%s", title);
 
@@ -268,7 +264,7 @@ static void show_sensor_menu(const char *title) {
 
         // Print menu options, properly centered
         for (int i = 0; i < num_options; i++) {
-            int option_x = (width - strlen(options[i])) / 2; // Center horizontally
+            int option_x = (width - cast(int)strlen(options[i])) / 2; // Center horizontally
             if (i == highlight) wattron(menu_win, A_REVERSE);
             mvwprintw(menu_win, 4 + i, option_x, "%s", options[i]);
             if (i == highlight) wattroff(menu_win, A_REVERSE);
@@ -299,9 +295,15 @@ static void show_sensor_menu(const char *title) {
 
             // Display action result, centered
             const char *message;
+            pthread_t sensor_thread; // message = "Viewing current value...";
             switch (choice) {
                 case 0:
-                    message = "Viewing current value..."; break;
+                    pthread_mutex_init(&temp_lock, NULL);
+                    pthread_create(&sensor_thread, NULL, cast(void *)get_temperature, NULL);
+                    display_temperature();
+                    pthread_cancel(sensor_thread);
+                    pthread_mutex_destroy(&temp_lock);
+                    break;
                 case 1: message = "Threshold setting coming soon!"; break;
                 case 2: 
                     delwin(menu_win);
@@ -309,7 +311,7 @@ static void show_sensor_menu(const char *title) {
                     return;
             }
 
-            mvwprintw(menu_win, height / 2, (width - strlen(message)) / 2, "%s", message);
+            mvwprintw(menu_win, height / 2, (width - cast(int)strlen(message)) / 2, "%s", message);
             // mvwprintw(menu_win, height - 2, (width - 24) / 2, "Press any key to return...");
             wrefresh(menu_win);
             getch();

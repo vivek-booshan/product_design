@@ -1,4 +1,3 @@
-#include <string.h>
 #include "aquamatic.h"
 
 volatile int tui_flag = 0;

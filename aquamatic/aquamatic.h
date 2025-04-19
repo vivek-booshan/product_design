@@ -1,8 +1,15 @@
 #ifndef AQUAMATIC_H
 #define AQUAMATIC_H
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <signal.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <termios.h>
+#include <ncurses.h>
 
 #ifndef cast
 #define cast(Type) (Type)
@@ -22,9 +29,11 @@ void run_daemon(void);
 void quit_daemon(void);
 void run_tui(void);
 void tui_signal_handler(int signum);
-inline void get_timestamp(char *buffer, size_t buffer_size);
+void get_timestamp(char *buffer, size_t buffer_size);
 void show_preset_menu(void);
 void print_help(const char *program_name);
+void get_temperature(void);
+void display_temperature(void);
 
 // #ifdef AQUA_IMPLEMENTATION
 

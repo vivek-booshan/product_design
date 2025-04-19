@@ -6,19 +6,19 @@ NCURSES_LIB_ARM = "${NCURSES_PATH_ARM}/lib"
 # NCURSES_LIB = "/nix/store/x9lgx9pd242kw0sdvdmwvmgj6igw8h8k-ncurses-6.4.20221231/lib"
 # NCURSES_LIB_ARM = "/nix/store/9wrswq92618yx8y0kv1mnj7d8wlw6b70-ncurses-aarch64-unknown-linux-gnu-6.4.20221231/lib"
 
-CFLAGS = -I $(NCURSES_INCLUDE) -Os
+CFLAGS = -I $(NCURSES_INCLUDE) -Os -g
 LDFLAGS = -L $(NCURSES_LIB) -l ncurses
 LDFLAGS_ARM = -L $(NCURSES_LIB_ARM) -l ncurses
 ARM_TARGET = --target=aarch64-linux-gnu
 WARNING_FLAGS = -Wall -Wextra -Wpedantic -Wconversion
 # SRC = main.c
-SRC = main.c tui.c daemon.c preset.c help.c
+SRC = main.c tui.c daemon.c preset.c help.c display_temperature.c get_temperature.c timestamp.c
 
 BUILD_DIR = build/native
 BUILD_DIR_ARM = build/arm
 
-OBJ = $(BUILD_DIR)/main.o $(BUILD_DIR)/tui.o $(BUILD_DIR)/daemon.o $(BUILD_DIR)/preset.o $(BUILD_DIR)/help.o
-OBJ_ARM = $(BUILD_DIR_ARM)/main.o $(BUILD_DIR_ARM)/tui.o $(BUILD_DIR_ARM)/daemon.o $(BUILD_DIR_ARM)/preset.o $(BUILD_DIR_ARM)/help.o
+OBJ = $(SRC:%.c=$(BUILD_DIR)/%.o)
+OBJ_ARM = $(SRC:%.c=$(BUILD_DIR_ARM)/%.o)
 
 OUT = $(BUILD_DIR)/aquamatic
 OUT_ARM = $(BUILD_DIR_ARM)/aquamatic

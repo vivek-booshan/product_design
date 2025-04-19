@@ -88,11 +88,11 @@ int read_temperature(FILE *reader, char *buf)
         }
 
         if (!new_data) {
-                printf("No update needed\n");
+                // printf("No update needed\n");
                 return 0;
         }
         last_pos = ftell(reader);
-        printf("last line: %s\n", last_line);
+        // printf("last line: %s\n", last_line);
 
         if (i >= 10000) {
                 truncate(TEMP_LOG, 0);
@@ -108,7 +108,7 @@ int read_temperature(FILE *reader, char *buf)
                 strcpy(buf, "");
                 return -2;
         }
-        printf("token: %s\n", token + 1);
+        // printf("token: %s\n", token + 1);
         strcpy(buf, token + 1);
         return 0;
 }

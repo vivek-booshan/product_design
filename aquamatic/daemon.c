@@ -1,19 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/file.h>
-#include <errno.h>
-#include <time.h>
 
 #include "aquamatic.h"
 
 
 static void ensure_directory_exists(const char *path);
 void get_pid(pid_t *pid);
-void get_timestamp(char *buffer, size_t buffer_size);
 
 void run_daemon(void) {
     signal(SIGUSR1, tui_signal_handler);
@@ -59,7 +51,6 @@ void run_daemon(void) {
     close(STDERR_FILENO);
 
     // Daemon: periodically check for updates
-    int i = 0;
     while (1) {
         if (tui_flag)  {
             // printf("Daemon successfully received user input from TUI\n");
@@ -128,18 +119,6 @@ void get_pid(pid_t *pid) {
     }
     read_pid_file(file, pid);
     fclose(file);
-}
-
-void get_timestamp(char *buffer, size_t buffer_size)
-{
-        time_t rawtime;
-        struct tm *timeinfo;
-
-        time(&rawtime);               // Get current time
-        timeinfo = localtime(&rawtime); // Convert to local time
-
-        // Format the time as "YY-MM-DD HH:MM:SS"
-        strftime(buffer, buffer_size, "%y-%m-%d %H:%M:%S", timeinfo);
 }
 
 void tui_signal_handler(int signum)

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+// #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <termios.h>
@@ -7,6 +8,8 @@
 
 #define SERIAL_PORT "/dev/serial0"
 #define BAUD_RATE B9600
+
+char temperature_buf[512] = "00.0000";
 
 int main(void)
 {
@@ -50,19 +53,20 @@ int main(void)
 
         printf("Listening on %s...\n", SERIAL_PORT);
 
-        char read_buf[512];
-        memset(&read_buf, '\0', sizeof(read_buf));
+        char local_buf[512];
+        memset(&local_buf, '\0', sizeof(local_buf));
 
         while (1) {
-                int num_bytes = read(serial_port, &read_buf, sizeof(read_buf));
+                int num_bytes = read(serial_port, &local_buf, sizeof(local_buf));
                 if (num_bytes < 0) {
                         if (errno == EAGAIN) continue;
                         perror("Error reading from serial port");
                         break;
                 } else if (num_bytes > 0) {
-                        read_buf[num_bytes] = '\0';
-                        printf("%s", read_buf);
-
+                        local_buf[num_bytes] = '\0';
+                        strncpy(temperature_buf, local_buf, sizeof(temperature_buf) - 1);
+                        temperature_buf[sizeof(temperature_buf) - 1] = '\0';
+                        printf("%s", temperature_buf);
                 }
                 usleep(100000); // 100ms
         }
