@@ -299,9 +299,17 @@ static void show_sensor_menu(const char *title) {
 
             // Display action result, centered
             const char *message;
+            plot_t plot_func = get_plot_function(title);
             switch (choice) {
                 case 0:
-                    message = "Viewing current value..."; break;
+                    werase(menu_win);
+                    wrefresh(menu_win);
+                    if (plot_func != NULL) {
+                        plot_func();
+                    }
+
+                    break;
+                    // message = "Viewing current value..."; break;
                 case 1: message = "Threshold setting coming soon!"; break;
                 case 2: 
                     delwin(menu_win);
