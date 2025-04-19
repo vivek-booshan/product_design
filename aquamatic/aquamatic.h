@@ -40,6 +40,8 @@ void show_preset_menu(void);
 void print_help(const char *program_name);
 void get_temperature(int serial_port, char *local_buf);
 void write_temperature(FILE *writer, const char *temperature_buf);
+void read_temperature_from_file(char *buf);
+// int read_temperature(FILE *reader, char *local_buf);
 int init_serial_port(int serial_port);
 plot_t get_plot_function(const char *title);
 

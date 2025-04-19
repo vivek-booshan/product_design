@@ -1,7 +1,7 @@
 #include <string.h>
 #include "aquamatic.h"
 
-volatile int tui_flag = 0;
+int tui_flag = 0;
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {

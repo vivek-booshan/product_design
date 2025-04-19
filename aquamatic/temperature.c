@@ -64,12 +64,12 @@ and formatted as (%s %f). Rewinding is handled.
 int read_temperature(FILE *reader, char *buf)
 {
         persistent short int last_pos = 0;
-        printf("Position: %d\n", last_pos);
+        // printf("Position: %d\n", last_pos);
         fseek(reader, last_pos, SEEK_SET);
         char line[100];
         char last_line[100];
 
-        short i = 0;
+        unsigned int i = 0;
         int new_data = 0;
         while (fgets(line, sizeof(line), reader)) {
                 strcpy(last_line, line);
@@ -101,4 +101,11 @@ int read_temperature(FILE *reader, char *buf)
         // printf("token: %s\n", token + 1);
         strcpy(buf, token + 1);
         return 0;
+}
+
+void read_temperature_from_file(char *buf)
+{
+        FILE *reader = fopen("/tmp/aquamatic/temperature.txt", "r");
+        read_temperature(reader, buf);
+        return;
 }

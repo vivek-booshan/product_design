@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ncurses.h>
 #include <string.h>
+#include <termios.h>
 
 #include "aquamatic.h"
 
@@ -303,14 +304,80 @@ static void show_sensor_menu(const char *title) {
             switch (choice) {
                 case 0:
                     werase(menu_win);
-                    wrefresh(menu_win);
-                    if (plot_func != NULL) {
-                        plot_func();
-                    }
+                    box(menu_win, 0, 0);
 
+                    char current_temperature[512];
+                    read_temperature_from_file(current_temperature);
+
+                    char buffer[64];
+                    snprintf(buffer, sizeof(buffer), "Current Temp: %s", current_temperature);
+
+                    mvwprintw(menu_win, height / 2, (width - strlen(buffer)) / 2, "%s", buffer);
+                    // mvwprintw(menu_win, height - 2, (width - 28) / 2, "Press any key to return");
+                    wrefresh(menu_win);
+
+                    getch();
                     break;
+                    // int screen_width;
+                    // int screen_height;
+                    // getmaxyx(stdscr, screen_height, screen_width);
+                    // WINDOW *plot_win = newwin(screen_height, screen_width, 0, 0);
+                    // box(plot_win, 0, 0);
+
+                    // wrefresh(plot_win);
+                    // curs_set(0);
+                    // plot_func();
+
+                    // int c;
+                    // nodelay(plot_win, FALSE);
+                    // while ((c = wgetch(plot_win)) != 'q') {}
+
+                    // werase(plot_win);
+                    // wrefresh(plot_win);
+                    // delwin(plot_win);
+
+                    // box(menu_win, 0, 0);
+                    // wrefresh(menu_win);
+
+                    // werase(menu_win);
+                    // wrefresh(menu_win);
+                    // endwin();  // Exit ncurses so gnuplot can print to terminal
+
+                    // if (plot_func != NULL) {
+                    //     plot_func();  // Will now print to the raw terminal
+                    // }
+
+                    // printf("\n");
+                    // fflush(stdout); // Make sure all output is shown
+
+                    // Turn off line buffering and wait for a single key
+                    // struct termios oldt, newt;
+                    // tcgetattr(STDIN_FILENO, &oldt);        // Get current terminal attrs
+                    // newt = oldt;
+                    // newt.c_lflag &= ~(ICANON | ECHO);      // Disable canonical mode and echo
+                    // tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+                    // int ch;
+                    // while ((ch = getchar()) != 'q');       // Wait for 'q'
+
+                    // // Restore terminal
+                    // tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+                    // printf("\n[Press 'q' to return to menu...]\n");
+                    // while (getchar() != 'q');  // Wait for 'q'
+
+                    // initscr();    // Re-init ncurses
+                    // noecho();
+                    // cbreak();
+                    // curs_set(0);
+                    // keypad(stdscr, TRUE);
+
+                    // // Redraw the menu
+                    // box(menu_win, 0, 0);
+                    // wrefresh(menu_win);
                     // message = "Viewing current value..."; break;
-                case 1: message = "Threshold setting coming soon!"; break;
+                case 1:
+                    message = "Threshold setting coming soon!";
+                    break;
                 case 2: 
                     delwin(menu_win);
                     endwin();
@@ -318,7 +385,6 @@ static void show_sensor_menu(const char *title) {
             }
 
             mvwprintw(menu_win, height / 2, (width - strlen(message)) / 2, "%s", message);
-            // mvwprintw(menu_win, height - 2, (width - 24) / 2, "Press any key to return...");
             wrefresh(menu_win);
             getch();
             choice = -1;
