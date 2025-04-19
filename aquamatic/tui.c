@@ -1,10 +1,8 @@
-#include <signal.h>
 #include <ncurses.h>
 
 #include "aquamatic.h"
 
-
-const char *menu_options[NUM_OPTIONS] = { // declared in aquamatic.h
+const char *menu_options[NUM_OPTIONS] = {
     // "Start Daemon",
     // "Kill Daemon",
     "Temperature",
@@ -19,11 +17,11 @@ const char *menu_options[NUM_OPTIONS] = { // declared in aquamatic.h
 };
 
 
-void doublecheck_kill_daemon(void);
-
+static void doublecheck_kill_daemon(void);
 static void show_sensor_menu(const char *Title);
 
-void run_tui(void) {
+void run_tui(void)
+{
     FILE *pid_file = fopen(PID_FILE, "r");
     pid_t pid;
 
@@ -143,7 +141,8 @@ void run_tui(void) {
 }
 
 
-void doublecheck_kill_daemon(void) {
+static void doublecheck_kill_daemon(void)
+{
     
     clear();
     mvprintw(10, 4, "Are you sure you want to kill the daemon? (y/n)");
@@ -223,7 +222,8 @@ void doublecheck_kill_daemon(void) {
 // }
 
 
-static void show_sensor_menu(const char *title) {
+static void show_sensor_menu(const char *title)
+{
     int highlight = 0;
     int choice = -1;
     int ch;

@@ -3,7 +3,8 @@
 static inline void ensure_directory_exists(const char *path);
 static inline void get_pid(pid_t *pid);
 
-void run_daemon(void) {
+void run_daemon(void)
+{
     signal(SIGUSR1, tui_signal_handler);
 
     ensure_directory_exists(AQUA_DIR);
@@ -83,7 +84,8 @@ void run_daemon(void) {
 }
 
 
-void quit_daemon(void) {
+void quit_daemon(void)
+{
     pid_t pid;
     get_pid(&pid);
 
@@ -104,14 +106,16 @@ void quit_daemon(void) {
     }
 }
 
-static inline void ensure_directory_exists(const char *path) {
+static inline void ensure_directory_exists(const char *path)
+{
     if (mkdir(path, 0755) < 0 && errno != EEXIST) {
         perror("Failed to create PID directory");
         exit(EXIT_FAILURE);
     }
 }
 
-inline void read_pid_file(FILE *pid_file, pid_t *pid) {
+inline void read_pid_file(FILE *pid_file, pid_t *pid)
+{
     if (fscanf(pid_file, "%d", pid) != 1) {
         printf("Error reading PID file.\n");
         fclose(pid_file);
@@ -119,7 +123,8 @@ inline void read_pid_file(FILE *pid_file, pid_t *pid) {
     }
 }
 
-static inline void get_pid(pid_t *pid) {
+static inline void get_pid(pid_t *pid)
+{
     FILE *file = fopen(PID_FILE, "r");
     if (!file) {
         printf("No running daemon found.\n");
