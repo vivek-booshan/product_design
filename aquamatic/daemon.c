@@ -1,19 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <signal.h>
-#include <fcntl.h>
 #include <sys/stat.h>
-#include <sys/file.h>
-#include <errno.h>
-#include <time.h>
-
+#include <string.h>
+// #include <fcntl.h>
 #include "aquamatic.h"
 
 
-static void ensure_directory_exists(const char *path);
-void get_pid(pid_t *pid);
-void get_timestamp(char *buffer, size_t buffer_size);
+static inline void ensure_directory_exists(const char *path);
+static inline void get_pid(pid_t *pid);
 
 void run_daemon(void) {
     signal(SIGUSR1, tui_signal_handler);
@@ -60,6 +53,14 @@ void run_daemon(void) {
 
     // Daemon: periodically check for updates
     int i = 0;
+
+    int serial_port = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
+    if (init_serial_port(serial_port) != 0)
+        return;
+
+    FILE *writer = fopen(TEMP_LOG, "a");
+    if (!writer)
+        return;
     while (1) {
         if (tui_flag)  {
             // printf("Daemon successfully received user input from TUI\n");
@@ -77,7 +78,10 @@ void run_daemon(void) {
             printf("%d", tui_flag);
             tui_flag = 0; // reset flag
         }
-
+        char local_buf[512];
+        memset(&local_buf, '\0', sizeof(local_buf));
+        get_temperature(serial_port, local_buf);
+        write_temperature(writer, temperature_buf);
         // fprintf();
         sleep(1);  // Check every second
     }
@@ -105,7 +109,7 @@ void quit_daemon(void) {
     }
 }
 
-static void ensure_directory_exists(const char *path) {
+static inline void ensure_directory_exists(const char *path) {
     if (mkdir(path, 0755) < 0 && errno != EEXIST) {
         perror("Failed to create PID directory");
         exit(EXIT_FAILURE);
@@ -120,7 +124,7 @@ inline void read_pid_file(FILE *pid_file, pid_t *pid) {
     }
 }
 
-void get_pid(pid_t *pid) {
+static inline void get_pid(pid_t *pid) {
     FILE *file = fopen(PID_FILE, "r");
     if (!file) {
         printf("No running daemon found.\n");
@@ -130,20 +134,19 @@ void get_pid(pid_t *pid) {
     fclose(file);
 }
 
-void get_timestamp(char *buffer, size_t buffer_size)
-{
-        time_t rawtime;
-        struct tm *timeinfo;
-
-        time(&rawtime);               // Get current time
-        timeinfo = localtime(&rawtime); // Convert to local time
-
-        // Format the time as "YY-MM-DD HH:MM:SS"
-        strftime(buffer, buffer_size, "%y-%m-%d %H:%M:%S", timeinfo);
-}
-
 void tui_signal_handler(int signum)
 {
         cast(void) signum;
         tui_flag = 1;
+}
+
+inline void get_timestamp(char *buffer, size_t buffer_size)
+{
+    time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime); 
+
+    strftime(buffer, buffer_size, "%y-%m-%d %H:%M:%S", timeinfo);
 }
