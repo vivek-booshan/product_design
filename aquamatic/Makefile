@@ -3,22 +3,19 @@ CC = zig cc
 NCURSES_INCLUDE = "/nix/store/3lbb9lx1gmis6qm8clq9g9k37i5l8l52-ncurses-6.4.20221231-dev/include"
 NCURSES_LIB = "${NCURSES_PATH}/lib"
 NCURSES_LIB_ARM = "${NCURSES_PATH_ARM}/lib"
-# NCURSES_LIB = "/nix/store/x9lgx9pd242kw0sdvdmwvmgj6igw8h8k-ncurses-6.4.20221231/lib"
-# NCURSES_LIB_ARM = "/nix/store/9wrswq92618yx8y0kv1mnj7d8wlw6b70-ncurses-aarch64-unknown-linux-gnu-6.4.20221231/lib"
 
 CFLAGS = -I $(NCURSES_INCLUDE) -Os
 LDFLAGS = -L $(NCURSES_LIB) -l ncurses
 LDFLAGS_ARM = -L $(NCURSES_LIB_ARM) -l ncurses
 ARM_TARGET = --target=aarch64-linux-gnu
 WARNING_FLAGS = -Wall -Wextra -Wpedantic -Wconversion
-# SRC = main.c
-SRC = main.c tui.c daemon.c preset.c help.c
+SRC = main.c tui.c daemon.c preset.c help.c temperature.c init_serial_port.c
 
 BUILD_DIR = build/native
 BUILD_DIR_ARM = build/arm
 
-OBJ = $(BUILD_DIR)/main.o $(BUILD_DIR)/tui.o $(BUILD_DIR)/daemon.o $(BUILD_DIR)/preset.o $(BUILD_DIR)/help.o
-OBJ_ARM = $(BUILD_DIR_ARM)/main.o $(BUILD_DIR_ARM)/tui.o $(BUILD_DIR_ARM)/daemon.o $(BUILD_DIR_ARM)/preset.o $(BUILD_DIR_ARM)/help.o
+OBJ = $(SRC:%.c=$(BUILD_DIR)/%.o)
+OBJ_ARM = $(SRC:%.c=$(BUILD_DIR_ARM)/%.o)
 
 OUT = $(BUILD_DIR)/aquamatic
 OUT_ARM = $(BUILD_DIR_ARM)/aquamatic
