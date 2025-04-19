@@ -1,9 +1,4 @@
-#include <signal.h>
-#include <sys/stat.h>
-#include <string.h>
-// #include <fcntl.h>
 #include "aquamatic.h"
-
 
 static inline void ensure_directory_exists(const char *path);
 static inline void get_pid(pid_t *pid);
@@ -134,7 +129,7 @@ static inline void get_pid(pid_t *pid) {
     fclose(file);
 }
 
-void tui_signal_handler(int signum)
+inline void tui_signal_handler(int signum)
 {
         cast(void) signum;
         tui_flag = 1;

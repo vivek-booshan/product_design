@@ -1,7 +1,5 @@
 #include <signal.h>
-#include <stdio.h>
 #include <ncurses.h>
-#include <string.h>
 
 #include "aquamatic.h"
 
