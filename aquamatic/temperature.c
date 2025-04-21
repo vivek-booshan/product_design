@@ -16,19 +16,6 @@ void write_data(FILE *writer, char *buf)
         fflush(writer);
 }
 
-// void write_temperature(FILE *writer, const char *temperature_buf)
-// {
-//         if (flock(fileno(writer), LOCK_EX) != 0) {
-//                 perror("Error Locking file");
-//                 fclose(writer);
-//                 return;
-//         }
-//         char timestamp[20];
-//         get_timestamp(timestamp, sizeof(timestamp));
-//         fprintf(writer, "%s, %s\n", timestamp, temperature_buf);
-//         fflush(writer);
-// }
-
 static void parse_serial_buffer(const char *restrict __src, char *restrict __dest,
                                 const size_t __destsize, const int num_bytes)
 {
