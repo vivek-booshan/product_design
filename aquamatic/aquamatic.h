@@ -21,7 +21,11 @@
 #define PID_FILE "/tmp/aquamatic/daemon.pid"
 #define STATE_FILE "/tmp/aquamatic/state.txt"
 #define TEMP_LOG "/tmp/aquamatic/temperature.txt"
-#define SERIAL_PORT "/dev/serial0"
+#define PH_LOG "/tmp/aquamatic/pH.txt"
+
+#define SERIAL0 "/dev/serial0"
+#define SERIALUSB0 "/dev/ttyUSB0"
+
 #define BAUD_RATE B9600
 
 extern volatile int tui_flag;
@@ -39,7 +43,8 @@ void get_timestamp(char *buffer, size_t buffer_size);
 void show_preset_menu(void);
 void print_help(const char *program_name);
 void get_temperature(int serial_port, char *local_buf);
-void write_temperature(FILE *writer, const char *temperature_buf);
+void get_ph(int usb_port, char *local_buf);
+void write_data(FILE *writer, char *temperature_buf);
 int init_serial_port(int serial_port);
 
 // #ifdef AQUA_IMPLEMENTATION

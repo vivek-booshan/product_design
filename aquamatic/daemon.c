@@ -50,13 +50,16 @@ void run_daemon(void)
     // Daemon: periodically check for updates
     int i = 0;
 
-    int serial_port = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
-    if (init_serial_port(serial_port) != 0)
-        return;
+    int temperature_port = open(SERIAL0, O_RDWR | O_NOCTTY | O_NDELAY);
+    if (init_serial_port(temperature_port) != 0) return;
+    FILE *temp_writer = fopen(TEMP_LOG, "a");
+    if (!temp_writer) return;
 
-    FILE *writer = fopen(TEMP_LOG, "a");
-    if (!writer)
-        return;
+    int ph_port = open(SERIALUSB0, O_RDONLY | O_NOCTTY | O_NDELAY);
+    if (init_serial_port(ph_port) != 0) return;
+    FILE *ph_writer = fopen(PH_LOG, "a");    
+    if (!ph_writer) return;
+
     while (1) {
         if (tui_flag)  {
             // printf("Daemon successfully received user input from TUI\n");
@@ -74,11 +77,14 @@ void run_daemon(void)
             printf("%d", tui_flag);
             tui_flag = 0; // reset flag
         }
-        char local_buf[512];
-        memset(&local_buf, '\0', sizeof(local_buf));
-        get_temperature(serial_port, local_buf);
-        write_temperature(writer, temperature_buf);
-        // fprintf();
+        char temp_buf[512], ph_buf[512];
+        memset(&temp_buf, '\0', sizeof(temp_buf));
+        memset(&ph_buf, '\0', sizeof(ph_buf));
+        get_temperature(temperature_port, temp_buf);
+        get_ph(ph_port, ph_buf);
+        write_data(temp_writer, temp_buf);
+        write_data(ph_writer, ph_buf);
+
         sleep(1);  // Check every second
     }
 }
