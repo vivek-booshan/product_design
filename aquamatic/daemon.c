@@ -61,31 +61,11 @@ void run_daemon(void)
     if (!ph_writer) return;
 
     while (1) {
-        if (tui_flag)  {
-            // printf("Daemon successfully received user input from TUI\n");
-            FILE *file = fopen(STATE_FILE, "a");
-            if (file) {
-                // int state;
-                // if (fscanf(file, "%d", &state) == 1) {
-                    // Daemon uses the state value
-                char buffer[20];
-                get_timestamp(buffer, sizeof(buffer));
-                fprintf(file, "[%s] Daemon received update", buffer);
-                    // printf("Daemon running with state: %d\n", state);
-            }
-            fclose(file);
-            printf("%d", tui_flag);
-            tui_flag = 0; // reset flag
-        }
-        char temp_buf[512], ph_buf[512];
-        memset(&temp_buf, '\0', sizeof(temp_buf));
-        memset(&ph_buf, '\0', sizeof(ph_buf));
-        get_temperature(temperature_port, temp_buf);
-        get_ph(ph_port, ph_buf);
-        write_data(temp_writer, temp_buf);
-        write_data(ph_writer, ph_buf);
-
-        sleep(1);  // Check every second
+        char local_buf[512];
+        memset(&local_buf, '\0', sizeof(local_buf));
+        get_temperature(serial_port, local_buf);
+        write_temperature(writer, temperature_buf);
+        sleep(1); 
     }
 }
 

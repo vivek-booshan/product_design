@@ -28,11 +28,13 @@
 
 #define BAUD_RATE B9600
 
-extern volatile int tui_flag;
+extern int tui_flag;
 extern char temperature_buf[512];
 extern float temperature;
 #define NUM_OPTIONS 9
 extern const char *menu_options[NUM_OPTIONS]; // declared in tui.c
+
+typedef int (*plot_t)();
 
 void read_pid_file(FILE *pid_file, pid_t *pid);
 void run_daemon(void);
@@ -46,6 +48,7 @@ void get_temperature(int serial_port, char *local_buf);
 void get_ph(int usb_port, char *local_buf);
 void write_data(FILE *writer, char *temperature_buf);
 int init_serial_port(int serial_port);
+plot_t get_plot_function(const char *title);
 
 // #ifdef AQUA_IMPLEMENTATION
 
