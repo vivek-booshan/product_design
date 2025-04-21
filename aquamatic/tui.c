@@ -1,8 +1,7 @@
 #include <ncurses.h>
 #include "aquamatic.h"
 
-
-const char *menu_options[NUM_OPTIONS] = { // declared in aquamatic.h
+const char *menu_options[NUM_OPTIONS] = {
     // "Start Daemon",
     // "Kill Daemon",
     "Temperature",
@@ -17,8 +16,7 @@ const char *menu_options[NUM_OPTIONS] = { // declared in aquamatic.h
 };
 
 
-void doublecheck_kill_daemon(void);
-
+static void doublecheck_kill_daemon(void);
 static void show_sensor_menu(const char *Title);
 
 void run_tui(void)
@@ -142,7 +140,7 @@ void run_tui(void)
 }
 
 
-void doublecheck_kill_daemon(void)
+static void doublecheck_kill_daemon(void)
 {
     
     clear();

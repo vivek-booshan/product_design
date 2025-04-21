@@ -1,14 +1,10 @@
-#include <signal.h>
-#include <sys/stat.h>
-#include <string.h>
-// #include <fcntl.h>
 #include "aquamatic.h"
-
 
 static inline void ensure_directory_exists(const char *path);
 static inline void get_pid(pid_t *pid);
 
-void run_daemon(void) {
+void run_daemon(void)
+{
     signal(SIGUSR1, tui_signal_handler);
 
     ensure_directory_exists(AQUA_DIR);
@@ -54,13 +50,16 @@ void run_daemon(void) {
     // Daemon: periodically check for updates
     int i = 0;
 
-    int serial_port = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
-    if (init_serial_port(serial_port) != 0)
-        return;
+    int temperature_port = open(SERIAL0, O_RDWR | O_NOCTTY | O_NDELAY);
+    if (init_serial_port(temperature_port) != 0) return;
+    FILE *temp_writer = fopen(TEMP_LOG, "a");
+    if (!temp_writer) return;
 
-    FILE *writer = fopen(TEMP_LOG, "a");
-    if (!writer)
-        return;
+    int ph_port = open(SERIALUSB0, O_RDONLY | O_NOCTTY | O_NDELAY);
+    if (init_serial_port(ph_port) != 0) return;
+    FILE *ph_writer = fopen(PH_LOG, "a");    
+    if (!ph_writer) return;
+
     while (1) {
         char local_buf[512];
         memset(&local_buf, '\0', sizeof(local_buf));
@@ -71,7 +70,8 @@ void run_daemon(void) {
 }
 
 
-void quit_daemon(void) {
+void quit_daemon(void)
+{
     pid_t pid;
     get_pid(&pid);
 
@@ -92,14 +92,16 @@ void quit_daemon(void) {
     }
 }
 
-static inline void ensure_directory_exists(const char *path) {
+static inline void ensure_directory_exists(const char *path)
+{
     if (mkdir(path, 0755) < 0 && errno != EEXIST) {
         perror("Failed to create PID directory");
         exit(EXIT_FAILURE);
     }
 }
 
-inline void read_pid_file(FILE *pid_file, pid_t *pid) {
+inline void read_pid_file(FILE *pid_file, pid_t *pid)
+{
     if (fscanf(pid_file, "%d", pid) != 1) {
         printf("Error reading PID file.\n");
         fclose(pid_file);
@@ -107,7 +109,8 @@ inline void read_pid_file(FILE *pid_file, pid_t *pid) {
     }
 }
 
-static inline void get_pid(pid_t *pid) {
+static inline void get_pid(pid_t *pid)
+{
     FILE *file = fopen(PID_FILE, "r");
     if (!file) {
         printf("No running daemon found.\n");
@@ -117,7 +120,7 @@ static inline void get_pid(pid_t *pid) {
     fclose(file);
 }
 
-void tui_signal_handler(int signum)
+inline void tui_signal_handler(int signum)
 {
         cast(void) signum;
         tui_flag = 1;

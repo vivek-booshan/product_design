@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "aquamatic.h"
 
 void print_help(const char *program_name) {

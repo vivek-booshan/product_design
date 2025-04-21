@@ -1,30 +1,23 @@
-#include <string.h>
-#include <sys/file.h>
-#include <unistd.h>
-#include <errno.h>
-
-#include <time.h>
-
 #include "aquamatic.h"
 
 char temperature_buf[512];
 float temperature = 0.0;
 
-void write_temperature(FILE *writer, const char *temperature_buf)
+void write_data(FILE *writer, char *buf)
 {
         if (flock(fileno(writer), LOCK_EX) != 0) {
-                perror("Error Locking file");
                 fclose(writer);
                 return;
         }
+
         char timestamp[20];
         get_timestamp(timestamp, sizeof(timestamp));
-        fprintf(writer, "%s, %s\n", timestamp, temperature_buf);
+        fprintf(writer, "%s, %s\n", timestamp, buf);
         fflush(writer);
 }
 
-static void parse_temperature(const char *restrict __src, char *restrict __dest,
-                              const size_t __destsize, const int num_bytes)
+static void parse_serial_buffer(const char *restrict __src, char *restrict __dest,
+                                const size_t __destsize, const int num_bytes)
 {
         int buf_pos = 0;
         for (int i = 0; i < num_bytes; i++) {
@@ -36,19 +29,32 @@ static void parse_temperature(const char *restrict __src, char *restrict __dest,
                         if (buf_pos < __destsize) {
                                 __dest[buf_pos++] = c;
                         } else {
-                                // Overflow safety
-                                buf_pos = 0;
+                                buf_pos = 0; // overflow safety
                         }
                 }
         }
 }
 
+/* communication via usb_port */
+void get_ph(int usb_port, char *local_buf)
+{
+        int bytes_read = read(usb_port, local_buf, sizeof(local_buf));
+        if (bytes_read > 0) {
+                local_buf[bytes_read] = '\0';
+        } else if (bytes_read < 0) {
+                if (errno == EAGAIN)
+                        return;
+                perror("Error reading from USB port");
+        }
+
+}
+
+/* Assumes communication directly via rx and tx pins of the pi. */
 void get_temperature(int serial_port, char *local_buf)
 {
         int num_bytes = read(serial_port, local_buf, sizeof(local_buf) - 1);
-
         if (num_bytes > 0) {
-                parse_temperature(local_buf, temperature_buf, sizeof(temperature_buf) - 1, num_bytes);
+                parse_serial_buffer(local_buf, temperature_buf, sizeof(temperature_buf) - 1, num_bytes);
         } else if (num_bytes < 0) {
                 if (errno == EAGAIN) {
                     return;
@@ -63,8 +69,7 @@ and formatted as (%s %f). Rewinding is handled.
 */
 int read_temperature(FILE *reader, char *buf)
 {
-        persistent short int last_pos = 0;
-        // printf("Position: %d\n", last_pos);
+        persistent int last_pos = 0;
         fseek(reader, last_pos, SEEK_SET);
         char line[100];
         char last_line[100];
@@ -78,11 +83,9 @@ int read_temperature(FILE *reader, char *buf)
         }
 
         if (!new_data) {
-                // printf("No update needed\n");
                 return 0;
         }
         last_pos = ftell(reader);
-        // printf("last line: %s\n", last_line);
 
         if (i >= 10000) {
                 truncate(TEMP_LOG, 0);
