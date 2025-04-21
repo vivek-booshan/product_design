@@ -41,6 +41,5 @@ int init_serial_port(int serial_port)
                 return 1;
         }
 
-        printf("Listening on %s...\n", SERIAL_PORT);
         return 0;
 }

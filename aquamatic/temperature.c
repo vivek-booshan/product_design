@@ -3,18 +3,31 @@
 char temperature_buf[512];
 float temperature = 0.0;
 
-void write_temperature(FILE *writer, const char *temperature_buf)
+void write_data(FILE *writer, char *buf)
 {
         if (flock(fileno(writer), LOCK_EX) != 0) {
-                perror("Error Locking file");
                 fclose(writer);
                 return;
         }
+
         char timestamp[20];
         get_timestamp(timestamp, sizeof(timestamp));
-        fprintf(writer, "%s, %s\n", timestamp, temperature_buf);
+        fprintf(writer, "%s, %s\n", timestamp, buf);
         fflush(writer);
 }
+
+// void write_temperature(FILE *writer, const char *temperature_buf)
+// {
+//         if (flock(fileno(writer), LOCK_EX) != 0) {
+//                 perror("Error Locking file");
+//                 fclose(writer);
+//                 return;
+//         }
+//         char timestamp[20];
+//         get_timestamp(timestamp, sizeof(timestamp));
+//         fprintf(writer, "%s, %s\n", timestamp, temperature_buf);
+//         fflush(writer);
+// }
 
 static void parse_serial_buffer(const char *restrict __src, char *restrict __dest,
                                 const size_t __destsize, const int num_bytes)
@@ -35,10 +48,24 @@ static void parse_serial_buffer(const char *restrict __src, char *restrict __des
         }
 }
 
+/* communication via usb_port */
+void get_ph(int usb_port, char *local_buf)
+{
+        int bytes_read = read(usb_port, local_buf, sizeof(local_buf));
+        if (bytes_read > 0) {
+                local_buf[bytes_read] = '\0';
+        } else if (bytes_read < 0) {
+                if (errno == EAGAIN)
+                        return;
+                perror("Error reading from USB port");
+        }
+
+}
+
+/* Assumes communication directly via rx and tx pins of the pi. */
 void get_temperature(int serial_port, char *local_buf)
 {
         int num_bytes = read(serial_port, local_buf, sizeof(local_buf) - 1);
-
         if (num_bytes > 0) {
                 parse_serial_buffer(local_buf, temperature_buf, sizeof(temperature_buf) - 1, num_bytes);
         } else if (num_bytes < 0) {
