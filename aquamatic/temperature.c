@@ -67,7 +67,7 @@ void get_temperature(int serial_port, char *local_buf)
 Reads the latest temperature from file written as (TIMESTAMP TEMPERATURE)
 and formatted as (%s %f). Rewinding is handled.
 */
-int read_temperature(FILE *reader, char *buf)
+static int read_temperature(FILE *reader, char *buf)
 {
         persistent int last_pos = 0;
         fseek(reader, last_pos, SEEK_SET);

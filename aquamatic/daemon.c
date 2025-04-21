@@ -61,10 +61,13 @@ void run_daemon(void)
     if (!ph_writer) return;
 
     while (1) {
-        char local_buf[512];
-        memset(&local_buf, '\0', sizeof(local_buf));
-        get_temperature(serial_port, local_buf);
-        write_temperature(writer, temperature_buf);
+        char temp_buf[512], ph_buf[512];
+        memset(&temp_buf, '\0', sizeof(temp_buf));
+        memset(&ph_buf, '\0', sizeof(ph_buf));
+        get_temperature(temperature_port, temp_buf);
+        get_ph(ph_port, ph_buf);
+        write_data(temp_writer, temp_buf);
+        write_data(ph_writer, ph_buf);
         sleep(1); 
     }
 }

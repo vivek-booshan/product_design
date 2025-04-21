@@ -49,6 +49,7 @@ void get_ph(int usb_port, char *local_buf);
 void write_data(FILE *writer, char *temperature_buf);
 int init_serial_port(int serial_port);
 plot_t get_plot_function(const char *title);
+void read_temperature_from_file(char *buf);
 
 // #ifdef AQUA_IMPLEMENTATION
 
