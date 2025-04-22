@@ -2,8 +2,6 @@
 #include "aquamatic.h"
 
 const char *menu_options[NUM_OPTIONS] = {
-    // "Start Daemon",
-    // "Kill Daemon",
     "Temperature",
     "pH",
     "kH (coming soon)",
@@ -26,12 +24,6 @@ void run_tui(void)
 
     if (!pid_file) {
         printf("No running daemon found.\n");
-    //     // printf("Would you like to start aquamatic? (y/n)");
-    //     // int start_session = getchar();
-    //     // if (start_session == 'y') {
-    //     //     printf("Starting Daemon");
-    //     //     run_daemon();
-    //     // } else if (start_session == 'n')
         return;
     }
     read_pid_file(pid_file, &pid);
@@ -160,67 +152,6 @@ static void doublecheck_kill_daemon(void)
     getch();
 }
 
-// void show_sensor_menu(const char *title) {//, float (*set_value)()) {
-//     int highlight = 0;
-//     int choice = -1;
-//     int ch;
-//     const char *options[] = {
-//         "View Current Value",
-//         "Set Temperature",
-//         "Back"
-//     };
-//     const int num_options = 3;
-
-//     while (1) {
-//         clear();
-//         mvprintw(2, 2, "%s Menu", title);
-//         mvprintw(3, 2, "Use arrow keys to navigate, ENTER to select.");
-
-//         for (int i = 0; i < num_options; i++) {
-//             if (i == highlight) attron(A_REVERSE);
-//             mvprintw(5 + i, 4, "%s", options[i]);
-//             if (i == highlight) attroff(A_REVERSE);
-//         }
-
-//         ch = getch();
-//         switch (ch) {
-//             case KEY_UP:
-//                 highlight = (highlight == 0) ? num_options - 1 : highlight - 1;
-//                 break;
-//             case KEY_DOWN:
-//                 highlight = (highlight == num_options - 1) ? 0 : highlight + 1;
-//                 break;
-//             case 10:  // Enter key
-//                 choice = highlight;
-//                 break;
-//             case 'q':
-//                 return;
-//         }
-
-//         if (choice != -1) {
-//             clear();
-//             switch (choice) {
-//                 case 0: // View Current Value
-//                     // mvprintw(10, 4, "Current %s: %.2f", title, set_value());
-//                     break;
-//                 case 1: // Set Threshold (Placeholder)
-//                     mvprintw(10, 4, "Threshold setting feature coming soon!");
-//                     break;
-//                 case 2: // Back
-//                     // refresh();
-//                     // getch();
-//                     // choice = -1;
-//                     return;
-//             }
-//             mvprintw(12, 4, "Press any key to return...");
-//             refresh();
-//             getch();
-//             choice = -1;
-//         }
-//     }
-// }
-
-
 static void show_sensor_menu(const char *title)
 {
     int highlight = 0;
@@ -314,63 +245,6 @@ static void show_sensor_menu(const char *title)
 
                     getch();
                     break;
-                    // int screen_width;
-                    // int screen_height;
-                    // getmaxyx(stdscr, screen_height, screen_width);
-                    // WINDOW *plot_win = newwin(screen_height, screen_width, 0, 0);
-                    // box(plot_win, 0, 0);
-
-                    // wrefresh(plot_win);
-                    // curs_set(0);
-                    // plot_func();
-
-                    // int c;
-                    // nodelay(plot_win, FALSE);
-                    // while ((c = wgetch(plot_win)) != 'q') {}
-
-                    // werase(plot_win);
-                    // wrefresh(plot_win);
-                    // delwin(plot_win);
-
-                    // box(menu_win, 0, 0);
-                    // wrefresh(menu_win);
-
-                    // werase(menu_win);
-                    // wrefresh(menu_win);
-                    // endwin();  // Exit ncurses so gnuplot can print to terminal
-
-                    // if (plot_func != NULL) {
-                    //     plot_func();  // Will now print to the raw terminal
-                    // }
-
-                    // printf("\n");
-                    // fflush(stdout); // Make sure all output is shown
-
-                    // Turn off line buffering and wait for a single key
-                    // struct termios oldt, newt;
-                    // tcgetattr(STDIN_FILENO, &oldt);        // Get current terminal attrs
-                    // newt = oldt;
-                    // newt.c_lflag &= ~(ICANON | ECHO);      // Disable canonical mode and echo
-                    // tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-                    // int ch;
-                    // while ((ch = getchar()) != 'q');       // Wait for 'q'
-
-                    // // Restore terminal
-                    // tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-                    // printf("\n[Press 'q' to return to menu...]\n");
-                    // while (getchar() != 'q');  // Wait for 'q'
-
-                    // initscr();    // Re-init ncurses
-                    // noecho();
-                    // cbreak();
-                    // curs_set(0);
-                    // keypad(stdscr, TRUE);
-
-                    // // Redraw the menu
-                    // box(menu_win, 0, 0);
-                    // wrefresh(menu_win);
-                    // message = "Viewing current value..."; break;
                 case 1:
                     message = "Threshold setting coming soon!";
                     break;
@@ -390,4 +264,3 @@ static void show_sensor_menu(const char *title)
     delwin(menu_win);
     endwin();
 }
-
