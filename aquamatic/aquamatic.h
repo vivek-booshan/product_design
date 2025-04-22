@@ -32,6 +32,13 @@ extern const char *menu_options[NUM_OPTIONS]; // declared in tui.c
 
 typedef int (*plot_t)();
 
+typedef struct setpoint_t {
+        float temp;
+        float ph;
+} setpoint_t;
+
+extern setpoint_t setpoints;
+
 void read_pid_file(FILE *pid_file, pid_t *pid);
 void run_daemon(void);
 void quit_daemon(void);
