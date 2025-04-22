@@ -1,4 +1,4 @@
-#include "aquamatic.h"
+#include "../include/aquamatic.h"
 
 #define MAX_LINE_LEN 256
 

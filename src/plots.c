@@ -1,5 +1,5 @@
 #include <ncurses.h>
-#include "aquamatic.h"
+#include "../include/aquamatic.h"
 
 static int plot_Temperature(void) {
         while (1) {

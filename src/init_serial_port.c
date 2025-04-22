@@ -1,6 +1,6 @@
 #include <termios.h>
 
-#include "aquamatic.h"
+#include "../include/aquamatic.h"
 
 int init_serial_port(int serial_port)
 {

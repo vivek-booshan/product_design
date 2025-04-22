@@ -1,4 +1,4 @@
-#include "aquamatic.h"
+#include "../include/aquamatic.h"
 
 void print_help(const char *program_name) {
     printf("Usage: %s <command>\n", program_name);

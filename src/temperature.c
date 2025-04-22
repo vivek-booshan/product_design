@@ -1,4 +1,4 @@
-#include "aquamatic.h"
+#include "../include/aquamatic.h"
 
 void write_data(FILE *writer, char *buf)
 {

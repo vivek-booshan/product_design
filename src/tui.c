@@ -1,5 +1,5 @@
 #include <ncurses.h>
-#include "aquamatic.h"
+#include "../include/aquamatic.h"
 
 const char *menu_options[NUM_OPTIONS] = {
     "Temperature",

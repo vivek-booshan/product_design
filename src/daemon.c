@@ -1,4 +1,4 @@
-#include "aquamatic.h"
+#include "../include/aquamatic.h"
 
 static inline void ensure_directory_exists(const char *path);
 static inline void get_pid(pid_t *pid);
