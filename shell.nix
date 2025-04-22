@@ -26,6 +26,7 @@ nativePkgs.mkShell {
 
   shellHook = ''
     export WIRINGPI_PATH="${crossPkgs.wiringpi}"
+    export NCURSES_INCLUDE="${nativePkgs.ncurses.dev}/include"
     export NCURSES_PATH="${nativePkgs.ncurses}"
     export NCURSES_PATH_ARM="${crossPkgs.ncurses}"
   '';
