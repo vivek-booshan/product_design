@@ -18,7 +18,7 @@ int main(int argc, char **argv)
                 run_tui();
         } else if (strcmp(flag, "help") == 0) {
                 print_help(argv[0]);
-        } else if (strcmp(flag, "plot") == 0) { 
+        } else if (strcmp(flag, "plot") == 0 && argc == 3) { 
                 plot_t plot_func = get_plot_function(argv[2]);
                 if (plot_func) {
                         plot_func();
