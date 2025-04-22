@@ -5,8 +5,6 @@ static inline void get_pid(pid_t *pid);
 
 void run_daemon(void)
 {
-    signal(SIGUSR1, tui_signal_handler);
-
     ensure_directory_exists(AQUA_DIR);
 
     int pid_fd = open(PID_FILE, O_CREAT | O_RDWR, 0666);
@@ -21,7 +19,6 @@ void run_daemon(void)
         exit(EXIT_FAILURE);
     }
 
-    // Try to lock the file
     if (flock(pid_fd, LOCK_EX | LOCK_NB) != 0) {
         printf("Daemon is already running.\n");
         exit(EXIT_FAILURE);
@@ -47,9 +44,6 @@ void run_daemon(void)
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
 
-    // Daemon: periodically check for updates
-    int i = 0;
-
     int temperature_port = open(SERIAL0, O_RDWR | O_NOCTTY | O_NDELAY);
     if (init_serial_port(temperature_port) != 0) return;
     FILE *temp_writer = fopen(TEMP_LOG, "a");
@@ -64,10 +58,13 @@ void run_daemon(void)
         char temp_buf[512], ph_buf[512];
         memset(&temp_buf, '\0', sizeof(temp_buf));
         memset(&ph_buf, '\0', sizeof(ph_buf));
+
         get_temperature(temperature_port, temp_buf);
         get_ph(ph_port, ph_buf);
+
         write_data(temp_writer, temp_buf);
         write_data(ph_writer, ph_buf);
+
         sleep(1); 
     }
 }
@@ -108,7 +105,6 @@ inline void read_pid_file(FILE *pid_file, pid_t *pid)
     if (fscanf(pid_file, "%d", pid) != 1) {
         printf("Error reading PID file.\n");
         fclose(pid_file);
-        return;
     }
 }
 
@@ -121,12 +117,6 @@ static inline void get_pid(pid_t *pid)
     }
     read_pid_file(file, pid);
     fclose(file);
-}
-
-inline void tui_signal_handler(int signum)
-{
-        cast(void) signum;
-        tui_flag = 1;
 }
 
 inline void get_timestamp(char *buffer, size_t buffer_size)
