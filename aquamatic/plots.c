@@ -57,7 +57,7 @@ static int plot_pH(void) {
                         "set title \"pH\"\n"
                         "set xlabel \"Time\"\n"
                         "set ylabel \"pH\"\n"
-                        "plot '/tmp/aquamatic/pH.txt' using 1:3 with lines title 'Temp'\n"
+                        "plot '/tmp/aquamatic/pH.txt' using 1:3 with lines title 'pH'\n"
                 );
 
                 fflush(gp);
