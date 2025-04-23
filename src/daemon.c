@@ -51,7 +51,7 @@ void run_daemon(void)
 
     int ph_port = open(SERIALUSB0, O_RDONLY | O_NOCTTY | O_NDELAY);
     if (init_serial_port(ph_port) != 0) return;
-    FILE *ph_writer = fopen(PH_LOG, "a");    
+    FILE *ph_writer = fopen(PH_LOG, "a");
     if (!ph_writer) return;
 
     while (1) {
@@ -62,6 +62,9 @@ void run_daemon(void)
         get_temperature(temperature_port, temp_buf);
         get_ph(ph_port, ph_buf);
 
+        // control_heater(atof(temp_buf));
+        // control_ph(atof(ph_buf));
+        // 
         write_data(temp_writer, temp_buf);
         write_data(ph_writer, ph_buf);
 
