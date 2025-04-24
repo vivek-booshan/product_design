@@ -29,8 +29,14 @@
 
 // gpio 17
 #define HEATER_PIN 0
+// gpio 12
+#define PHUP_PIN 26
+// gpio 16
+#define PHDOWN_PIN 27
+
 #define NUM_OPTIONS 9
 extern const char *menu_options[NUM_OPTIONS]; // declared in tui.c
+
 typedef struct setpoint_t {
         float temp;
         float ph;
@@ -53,5 +59,6 @@ int init_serial_port(int serial_port);
 plot_t get_plot_function(const char *title);
 void read_temperature_from_file(char *buf);
 void control_heater(float temperature);
+void control_ph(float ph);
 
 #endif // AQUAMATIC_H
