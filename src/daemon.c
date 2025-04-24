@@ -1,4 +1,5 @@
 #include "../include/aquamatic.h"
+#include "wiringPi.h"
 
 static inline void ensure_directory_exists(const char *path);
 static inline void get_pid(pid_t *pid);
@@ -54,6 +55,11 @@ void run_daemon(void)
     FILE *ph_writer = fopen(PH_LOG, "a");
     if (!ph_writer) return;
 
+    wiringPiSetup();
+    pinMode(HEATER_PIN, OUTPUT);
+    pinMode(PHUP_PIN, OUTPUT);
+    pinMode(PHDOWN_PIN, OUTPUT);
+
     while (1) {
         char temp_buf[512], ph_buf[512];
         memset(&temp_buf, '\0', sizeof(temp_buf));
@@ -63,7 +69,7 @@ void run_daemon(void)
         get_ph(ph_port, ph_buf);
 
         control_heater(atof(temp_buf));
-        // control_ph(atof(ph_buf));
+        control_ph(atof(ph_buf));
         // 
         write_data(temp_writer, temp_buf);
         write_data(ph_writer, ph_buf);

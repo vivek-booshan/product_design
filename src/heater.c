@@ -2,14 +2,14 @@
 #include "../include/aquamatic.h"
 
 
-inline void heater_on(void)
-{
-        digitalWrite(HEATER_PIN, LOW);
-}
-
-inline void heater_off(void)
+static inline void heater_on(void)
 {
         digitalWrite(HEATER_PIN, HIGH);
+}
+
+static inline void heater_off(void)
+{
+        digitalWrite(HEATER_PIN, LOW);
 }
 
 static inline void __control_heater(float temperature, setpoint_t sp)

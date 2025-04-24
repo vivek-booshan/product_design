@@ -66,9 +66,9 @@ static int read_temperature(FILE *reader, char *buf)
                 new_data = 1;
         }
 
-        if (!new_data) {
+        if (!new_data) 
                 return 0;
-        }
+        
         last_pos = ftell(reader);
 
         if (i >= 10000) {
