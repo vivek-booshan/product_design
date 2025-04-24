@@ -27,9 +27,16 @@
 #define SERIALUSB0 "/dev/ttyUSB0"
 #define BAUD_RATE B9600
 
+// gpio 17
+#define HEATER_PIN 0
 #define NUM_OPTIONS 9
 extern const char *menu_options[NUM_OPTIONS]; // declared in tui.c
+typedef struct setpoint_t {
+        float temp;
+        float ph;
+} setpoint_t;
 
+extern setpoint_t sp;
 typedef int (*plot_t)();
 
 void read_pid_file(FILE *pid_file, pid_t *pid);
@@ -45,5 +52,6 @@ void write_data(FILE *writer, char *temperature_buf);
 int init_serial_port(int serial_port);
 plot_t get_plot_function(const char *title);
 void read_temperature_from_file(char *buf);
+void control_heater(float temperature);
 
 #endif // AQUAMATIC_H

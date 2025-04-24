@@ -62,7 +62,7 @@ void run_daemon(void)
         get_temperature(temperature_port, temp_buf);
         get_ph(ph_port, ph_buf);
 
-        // control_heater(atof(temp_buf));
+        control_heater(atof(temp_buf));
         // control_ph(atof(ph_buf));
         // 
         write_data(temp_writer, temp_buf);

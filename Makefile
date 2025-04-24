@@ -6,13 +6,15 @@ BUILD_DIR_ARM = build/arm
 
 NCURSES_LIB = ${NCURSES_PATH}/lib
 NCURSES_LIB_ARM = ${NCURSES_PATH_ARM}/lib
+WIRINGPI_LIB = ${WIRINGPI_PATH}/lib
+WIRINGPI_INCLUDE = ${WIRINGPI_PATH}/include
 
-CFLAGS = -I$(NCURSES_INCLUDE) -Iinclude -Os
+CFLAGS = -I$(NCURSES_INCLUDE) -Iinclude -I$(WIRINGPI_INCLUDE) -Os
 WARNING_FLAGS = -Wall -Wextra -Wpedantic -Wconversion
 ARM_TARGET = --target=aarch64-linux-gnu
 
 LDFLAGS = -L$(NCURSES_LIB) -lncurses
-LDFLAGS_ARM = -L$(NCURSES_LIB_ARM) -lncurses
+LDFLAGS_ARM = -L$(NCURSES_LIB_ARM) -lncurses -L$(WIRINGPI_LIB) -lwiringPi
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 SRC_NAMES = $(notdir $(SRC_FILES))              # e.g., daemon.c

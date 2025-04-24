@@ -128,7 +128,7 @@ void run_tui(void)
     }
 
     endwin();  // End ncurses
-    printf("Sending User Input to Daemon");
+    // printf("Sending User Input to Daemon");
 }
 
 
